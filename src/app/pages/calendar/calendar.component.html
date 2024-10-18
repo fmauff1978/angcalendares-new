@@ -1,0 +1,18 @@
+<section class="calendar-container">
+
+  <button mat-button color="primay" (click)="openModal()">Agregar Evento</button>
+
+  <article class="calendar-content">
+    @for (header of headers; track header){
+      <span class="calendar-header">{{header}}</span>
+    }
+
+    @for (item of calendarData; track item){
+      <div class="calendar-body" [ngClass]="[item.isCurrentMonth?'current-month':'', item.isCurrentDay? 'current-day':'']">
+      <span>{{item.day}}</span>
+    </div>
+    }
+
+  </article>
+
+</section>

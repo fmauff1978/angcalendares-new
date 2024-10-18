@@ -18,33 +18,41 @@ export class CalendarComponent {
 
   private date = new Date();
   calendarData: NCalendar.Body[] = [];
+  dialogService: any;
 
   // calendarData = new Array(42).fill(1);
 
   constructor() {
     this.createCalendarData();
-   // effect(()=>{
+    effect(()=>{
 
-      //  if (this.dialogService.getEvent)
+      if (this.dialogService.getEvent){
+
+        this.createEvent(this.dialogService.getEvent);
+
+      }
 
 
-   // })
+   })
   }
 
   createCalendarData() {
 
-    const firstDayinMonth = new Date(this.date.getFullYear(),this.date.getMonth(), 1).getDay();
-    const previousMonth = new Date(this.date.getFullYear(),this.date.getMonth(), 0).getDate();
+    const firstDayinMonth = this.getSelectDate(this.date.getFullYear(),this.date.getMonth(), 1).getDay();
+    const previousMonth = this.getSelectDate(this.date.getFullYear(),this.date.getMonth(), 0).getDate();
 
     console.log(previousMonth);
     console.log(firstDayinMonth);
 
           for (let i = firstDayinMonth; i > 0; i--) {
 
-                  this.calendarData.push({ day: previousMonth - (i - 1) ,
-                       isCurrentDay: false,
-                      isCurrentMonth: false
-                    });
+                  this.calendarData.push({
+                    day: previousMonth - (i - 1),
+                    isCurrentDay: false,
+                    isCurrentMonth: false,
+                    events: [],
+                    date: this.getSelectDate(this.date.getFullYear(),this.date.getMonth()-1, previousMonth - (i - 1))
+                  });
     }
 
     const daysInMonth = this.getSelectDate(this.date.getFullYear(), this.date.getMonth() + 1, 0).getDate();
@@ -59,9 +67,12 @@ export class CalendarComponent {
                   console.log(newDate);
 
 
-              this.calendarData.push({ day: i ,
+              this.calendarData.push({
+                day: i,
                 isCurrentDay: this.formDate(this.date) === this.formDate(newDate),
-                  isCurrentMonth: true
+                isCurrentMonth: true,
+                events: [],
+                date: newDate
               });
     }
 
@@ -69,9 +80,12 @@ export class CalendarComponent {
 
 
             for (let i = 1; i <= this.totalItems - calendarLength; i++) {
-              this.calendarData.push({ day: i,
+              this.calendarData.push({
+                day: i,
                 isCurrentDay: false,
-                  isCurrentMonth: false
+                isCurrentMonth: false,
+                events: [],
+                date: this.getSelectDate(this.date.getFullYear(),this.date.getMonth()+1, i)
               }
 
               );
@@ -97,10 +111,44 @@ export class CalendarComponent {
 
   }
 
-  ////private createEvent(item: NCalendar.IEvent){
+  private createEvent(item: NCalendar.IEvent){
+
+    const newCalendarData = [... this.calendarData];
+
+    const findEvent = newCalendarData.map(calendar =>{
+
+    const findIndex = calendar.events.findIndex(event => this.formDate(event.date)=== this.formDate(item.date))
+
+      return findIndex !== 1 ? findIndex: null;
+    }).find(item=> item)
 
 
- // }
+
+    if (!findEvent){
+
+
+        const selectedIndex = newCalendarData.findIndex(calendar => this.formDate(calendar.date) === this.formDate(item.date));
+
+
+        if (selectedIndex!== -1){
+
+          newCalendarData[selectedIndex].events.push(item);
+
+
+        }
+
+
+
+
+      newCalendarData
+
+    }
+
+    console.log(findEvent);
+
+
+
+ }
 
   openModal() {}
 }

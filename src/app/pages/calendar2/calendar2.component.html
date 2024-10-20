@@ -1,0 +1,62 @@
+
+<div class="calendar-container">
+
+<article class="calendar-content">
+  @for (header of headers; track header){
+    <span class="calendar-header">{{header}}</span>
+  }
+
+  @for (item of calendarData; let calendarIndex = $index; track item) {
+    <div class="calendar-body" [ngClass]="[ item.isCurrentMonth ? 'current-month' : '',  item.isCurrentDay ? 'current-day' : '']">
+        <span>{{item.day}}</span>
+
+
+
+    </div>
+}
+</article>
+
+</div>
+
+
+
+<div class="calendar-container">
+
+  <article class="calendar-content">
+    @for (header of headers; track header){
+      <span class="calendar-header">{{header}}</span>
+    }
+
+
+
+
+    <div *ngFor="let day of calendarData">
+      <div class="calendar-body" [ngClass]="[ day.isCurrentMonth ? 'current-month' : '',  day.isCurrentDay ? 'current-day' : '']">
+        <span>{{day.day}}</span>
+        <div *ngFor="let event of day.events">
+          <span>{{event.evento}}</span><!-- Mostrar informações do evento -->
+        </div>
+      </div>
+
+
+
+    </div>
+
+</article>
+<button (click)="nextMonth()">Próximo Mês</button>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

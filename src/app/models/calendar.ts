@@ -10,7 +10,7 @@ export namespace NCalendar{
     day: number;
     isCurrentDay: boolean;
     isCurrentMonth: boolean;
-    events: IEvent[];
+    events: any[]
     date: Date
 
 

@@ -2,11 +2,21 @@ import { Component, effect } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { NCalendar } from '../../models/calendar';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+
+
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [MatButtonModule, CommonModule],
+  imports: [MatButtonModule, CommonModule,
+    CommonModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatMenuModule],
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.scss',
 })
@@ -17,23 +27,17 @@ export class CalendarComponent {
   private totalItems = 42;
 
   private date = new Date();
-  calendarData: NCalendar.Body[] = [];
+  calendarData: any[] = [];
   dialogService: any;
+
+  events = [{data: "2024-12-10", evento: "teste"}, {data:"2024-12-13", evento: "teste2"}]
+
 
   // calendarData = new Array(42).fill(1);
 
   constructor() {
     this.createCalendarData();
-    effect(()=>{
 
-      if (this.dialogService.getEvent){
-
-        this.createEvent(this.dialogService.getEvent);
-
-      }
-
-
-   })
   }
 
   createCalendarData() {
@@ -50,7 +54,7 @@ export class CalendarComponent {
                     day: previousMonth - (i - 1),
                     isCurrentDay: false,
                     isCurrentMonth: false,
-                    events: [],
+                    events: this.events,
                     date: this.getSelectDate(this.date.getFullYear(),this.date.getMonth()-1, previousMonth - (i - 1))
                   });
     }
@@ -71,7 +75,7 @@ export class CalendarComponent {
                 day: i,
                 isCurrentDay: this.formDate(this.date) === this.formDate(newDate),
                 isCurrentMonth: true,
-                events: [],
+                events: this.events,
                 date: newDate
               });
     }
@@ -84,7 +88,7 @@ export class CalendarComponent {
                 day: i,
                 isCurrentDay: false,
                 isCurrentMonth: false,
-                events: [],
+                events: this.events,
                 date: this.getSelectDate(this.date.getFullYear(),this.date.getMonth()+1, i)
               }
 
@@ -115,11 +119,11 @@ export class CalendarComponent {
 
     const newCalendarData = [... this.calendarData];
 
-    const findEvent = newCalendarData.map(calendar =>{
+    const findEvent = newCalendarData.map((calendar, calendarIndex) =>{
 
-    const findIndex = calendar.events.findIndex(event => this.formDate(event.date)=== this.formDate(item.date))
+    const eventIndex = calendar.events.findIndex(event => this.formDate(event.date)=== this.formDate(item.date))
 
-      return findIndex !== 1 ? findIndex: null;
+      return eventIndex !== 1 ? {eventIndex, calendarIndex}: null;
     }).find(item=> item)
 
 
@@ -140,7 +144,6 @@ export class CalendarComponent {
 
 
 
-      newCalendarData
 
     }
 
